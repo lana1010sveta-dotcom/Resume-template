@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResumeData, WorkExperience, Education, Course, Language } from '../types';
-import { Plus, Trash2, User, FileText, Briefcase, GraduationCap, Award, Languages, Info, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, User, FileText, Briefcase, GraduationCap, Award, Languages, BookOpen, Heart } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 interface Props {
@@ -58,6 +58,25 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
     onChange({ ...data, languages: [...data.languages, newLang] });
   };
 
+  const addCourse = () => {
+    const newCourse: Course = {
+      id: crypto.randomUUID(),
+      name: '',
+      platform: '',
+      year: ''
+    };
+    onChange({ ...data, courses: [...data.courses, newCourse] });
+  };
+
+  const updateCourse = (id: string, field: keyof Course, value: string) => {
+    const updated = data.courses.map(c => c.id === id ? { ...c, [field]: value } : c);
+    onChange({ ...data, courses: updated });
+  };
+
+  const updateAdditional = (field: string, value: string) => {
+    onChange({ ...data, additional: { ...data.additional, [field]: value } });
+  };
+
   return (
     <div className="space-y-12 pb-32">
       {/* Contact Section */}
@@ -90,11 +109,11 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
       <FormSection 
         icon={<Briefcase size={18} />} 
         title="Опыт работы" 
-        action={<button onClick={addExperience} className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"><Plus size={14} /> Добавить</button>}
+        action={<button onClick={addExperience} className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors"><Plus size={14} /> Добавить</button>}
       >
         <div className="space-y-6">
           {data.workExperience.map((exp) => (
-            <div key={exp.id} className="group relative bg-slate-50 border border-slate-200 p-6 rounded-2xl hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 transition-all">
+            <div key={exp.id} className="group relative bg-slate-50 border border-slate-200 p-6 rounded-2xl hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-500/5 transition-all">
               <button 
                 onClick={() => onChange({ ...data, workExperience: data.workExperience.filter(e => e.id !== exp.id) })}
                 className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
@@ -118,11 +137,11 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
       <FormSection 
         icon={<GraduationCap size={18} />} 
         title="Образование"
-        action={<button onClick={addEducation} className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"><Plus size={14} /> Добавить</button>}
+        action={<button onClick={addEducation} className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors"><Plus size={14} /> Добавить</button>}
       >
         <div className="space-y-4">
           {data.education.map((edu) => (
-            <div key={edu.id} className="group border border-slate-200 bg-white p-5 rounded-xl relative hover:border-indigo-200">
+            <div key={edu.id} className="group border border-slate-200 bg-white p-5 rounded-xl relative hover:border-emerald-200">
                <button onClick={() => onChange({ ...data, education: data.education.filter(e => e.id !== edu.id) })} className="absolute top-2 right-2 text-slate-300 hover:text-red-500"><Trash2 size={16} /></button>
                <Input label="Вуз / Учреждение" value={edu.institution} onChange={(v) => {
                  const updated = data.education.map(e => e.id === edu.id ? { ...e, institution: v } : e);
@@ -167,7 +186,7 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
       <FormSection 
         icon={<Languages size={18} />} 
         title="Языки"
-        action={<button onClick={addLanguage} className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"><Plus size={14} /> Добавить</button>}
+        action={<button onClick={addLanguage} className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors"><Plus size={14} /> Добавить</button>}
       >
         <div className="space-y-3">
           {data.languages.map(lang => (
@@ -192,6 +211,35 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
           ))}
         </div>
       </FormSection>
+
+      {/* Courses Section */}
+      <FormSection
+        icon={<BookOpen size={18} />}
+        title="Курсы и сертификаты"
+        action={<button onClick={addCourse} className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors"><Plus size={14} /> Добавить</button>}
+      >
+        <div className="space-y-3">
+          {data.courses.map((course) => (
+            <div key={course.id} className="flex gap-4 items-end bg-slate-50 p-4 rounded-xl border border-slate-100">
+              <Input className="flex-[2]" label="Название курса" value={course.name} onChange={(v) => updateCourse(course.id, 'name', v)} />
+              <Input className="flex-1" label="Платформа" value={course.platform} onChange={(v) => updateCourse(course.id, 'platform', v)} placeholder="Stepik" />
+              <Input className="w-24" label="Год" value={course.year} onChange={(v) => updateCourse(course.id, 'year', v)} placeholder="2024" />
+              <button
+                onClick={() => onChange({ ...data, courses: data.courses.filter(c => c.id !== course.id) })}
+                className="mb-2 w-10 h-10 flex items-center justify-center text-slate-300 hover:bg-white hover:text-red-500 rounded-lg transition-all"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+          {data.courses.length === 0 && <EmptyState message="Добавьте курс или сертификат" onClick={addCourse} />}
+        </div>
+      </FormSection>
+
+      {/* Additional Section */}
+      <FormSection icon={<Heart size={18} />} title="Дополнительно">
+        <TextArea label="Хобби и интересы" value={data.additional.hobbies} onChange={(v) => updateAdditional('hobbies', v)} placeholder="Например: фотография, бег, настольные игры..." />
+      </FormSection>
     </div>
   );
 };
@@ -201,7 +249,7 @@ const FormSection = ({ icon, title, children, action }: { icon: React.ReactNode,
   <div className="relative">
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 flex items-center justify-center bg-white shadow-sm border border-slate-100 rounded-xl text-indigo-600">
+        <div className="w-10 h-10 flex items-center justify-center bg-white shadow-sm border border-slate-100 rounded-xl text-emerald-600">
           {icon}
         </div>
         <h3 className="text-lg font-bold text-slate-900 tracking-tight">{title}</h3>
@@ -219,7 +267,7 @@ const Input = ({ label, value, onChange, placeholder, className }: { label: stri
     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1">{label}</label>
     <input 
       type="text"
-      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 placeholder:text-slate-300 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all"
+      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 placeholder:text-slate-300 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -232,7 +280,7 @@ const TextArea = ({ label, value, onChange, placeholder, rows = 3 }: { label: st
     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1">{label}</label>
     <textarea 
       rows={rows}
-      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 placeholder:text-slate-300 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all resize-none"
+      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 placeholder:text-slate-300 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all resize-none"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -244,7 +292,7 @@ const Select = ({ label, value, options, onChange }: { label: string, value: str
   <div className="space-y-1.5">
     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1">{label}</label>
     <select 
-      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/5 outline-none transition-all appearance-none cursor-pointer"
+      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all appearance-none cursor-pointer"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
@@ -256,10 +304,10 @@ const Select = ({ label, value, options, onChange }: { label: string, value: str
 const EmptyState = ({ message, onClick }: { message: string, onClick: () => void }) => (
   <div 
     onClick={onClick}
-    className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-slate-50 hover:border-indigo-200 transition-all group"
+    className="border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-slate-50 hover:border-emerald-200 transition-all group"
   >
-    <div className="p-3 bg-slate-50 rounded-full group-hover:bg-indigo-50 transition-colors">
-      <Plus size={20} className="text-slate-400 group-hover:text-indigo-500" />
+    <div className="p-3 bg-slate-50 rounded-full group-hover:bg-emerald-50 transition-colors">
+      <Plus size={20} className="text-slate-400 group-hover:text-emerald-500" />
     </div>
     <span className="text-sm font-medium text-slate-400 group-hover:text-slate-600">{message}</span>
   </div>

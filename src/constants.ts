@@ -1,5 +1,6 @@
 import { ResumeData } from './types';
 
+// Пустой бланк — клиент заполняет поля сам, затем скачивает PDF.
 export const INITIAL_DATA: ResumeData = {
   contact: {
     fullName: '',

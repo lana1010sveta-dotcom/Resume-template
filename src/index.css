@@ -8,7 +8,11 @@
   
   --color-resume-primary: #0f172a;
   --color-resume-secondary: #475569;
-  --color-resume-accent: #6366f1;
+  --color-resume-accent: #10b981;
+  --color-resume-accent-2: #06b6d4;
+
+  /* Emerald → cyan brand gradient (reused across both layouts) */
+  --resume-grad: linear-gradient(160deg, #10b981 0%, #06b6d4 100%);
 }
 
 @layer base {
@@ -22,13 +26,23 @@
     background: white;
     width: 210mm;
     min-height: 297mm;
-    padding: 20mm;
     margin: 0 auto;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  .resume-grad {
+    background: var(--resume-grad);
   }
 
   .glass-card {
     @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
+  }
+
+  /* Make colored backgrounds/gradients survive PDF export & print */
+  .print-color {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 
@@ -47,6 +61,13 @@
     box-shadow: none;
     margin: 0;
     width: 100%;
-    padding: 15mm;
+    overflow: visible; /* allow content to flow onto additional A4 pages */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Keep headings attached to their content across page breaks */
+  h1, h2, h3 {
+    break-after: avoid;
   }
 }
