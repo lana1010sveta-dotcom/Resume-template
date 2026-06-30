@@ -27,7 +27,9 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
       company: '',
       position: '',
       period: '',
+      projectDescription: '',
       duties: '',
+      technologies: '',
       achievements: ''
     };
     onChange({ ...data, workExperience: [newExp, ...data.workExperience] });
@@ -125,8 +127,28 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
                 <Input label="Роль" value={exp.position} onChange={(v) => updateExperience(exp.id, 'position', v)} />
                 <Input label="Период" value={exp.period} onChange={(v) => updateExperience(exp.id, 'period', v)} placeholder="2021 — 2024" />
               </div>
-              <TextArea label="Обязанности" value={exp.duties} onChange={(v) => updateExperience(exp.id, 'duties', v)} />
-              <Input label="Ключевой результат на этой роли" value={exp.achievements} onChange={(v) => updateExperience(exp.id, 'achievements', v)} />
+              <TextArea
+                label="Описание проекта / компании"
+                value={exp.projectDescription || ''}
+                onChange={(v) => updateExperience(exp.id, 'projectDescription', v)}
+                rows={2}
+                placeholder="Чем занималась компания и над каким продуктом вы работали. 1–2 строки контекста."
+              />
+              <TextArea
+                label="Обязанности"
+                value={exp.duties}
+                onChange={(v) => updateExperience(exp.id, 'duties', v)}
+                rows={4}
+                hint="Каждую обязанность пишите с новой строки — она станет отдельным пунктом в резюме."
+                placeholder={'Запускал рекламные кампании в Telegram и Instagram\nСократил стоимость заявки на 30%\nВёл клиентскую базу из 200+ контактов'}
+              />
+              <Input
+                label="Технологии / инструменты"
+                value={exp.technologies || ''}
+                onChange={(v) => updateExperience(exp.id, 'technologies', v)}
+                placeholder="Figma, Notion, Google Ads — через запятую"
+              />
+              <Input label="Ключевой результат на этой роли (по желанию)" value={exp.achievements} onChange={(v) => updateExperience(exp.id, 'achievements', v)} className="mt-4" />
             </div>
           ))}
           {data.workExperience.length === 0 && <EmptyState message="Добавьте ваше первое место работы" onClick={addExperience} />}
@@ -275,16 +297,17 @@ const Input = ({ label, value, onChange, placeholder, className }: { label: stri
   </div>
 );
 
-const TextArea = ({ label, value, onChange, placeholder, rows = 3 }: { label: string, value: string, onChange: (v: string) => void, placeholder?: string, rows?: number }) => (
+const TextArea = ({ label, value, onChange, placeholder, rows = 3, hint }: { label: string, value: string, onChange: (v: string) => void, placeholder?: string, rows?: number, hint?: string }) => (
   <div className="space-y-1.5 mb-4">
     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1">{label}</label>
-    <textarea 
+    <textarea
       rows={rows}
       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[13px] text-slate-700 placeholder:text-slate-300 focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all resize-none"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
     />
+    {hint && <p className="text-[11px] text-slate-400 leading-snug pl-1">{hint}</p>}
   </div>
 );
 

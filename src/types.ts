@@ -25,7 +25,9 @@ export interface WorkExperience {
   company: string;
   position: string;
   period: string;
+  projectDescription: string;
   duties: string;
+  technologies: string;
   achievements: string;
 }
 

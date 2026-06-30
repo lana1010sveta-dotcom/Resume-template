@@ -131,10 +131,20 @@ const ExperienceSection = ({ data }: { data: ResumeData }) =>
               {exp.period && <span className="text-[10px] font-bold text-cyan-600 uppercase tracking-wider whitespace-nowrap">{exp.period}</span>}
             </div>
             {exp.company && <p className="text-[13px] font-semibold text-emerald-600 mb-2">{exp.company}</p>}
+            {exp.projectDescription && (
+              <p className="text-[12px] text-slate-500 leading-relaxed mb-2 italic">{exp.projectDescription}</p>
+            )}
             {exp.duties && (
               <div className="text-[12.5px] text-slate-600 leading-relaxed space-y-1">
                 {exp.duties.split('\n').filter(Boolean).map((d, k) => (
                   <p key={k} className="flex gap-2"><span className="text-emerald-400 mt-px">›</span><span>{d}</span></p>
+                ))}
+              </div>
+            )}
+            {exp.technologies && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {exp.technologies.split(',').map((t) => t.trim()).filter(Boolean).map((t, k) => (
+                  <span key={k} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">{t}</span>
                 ))}
               </div>
             )}
@@ -389,7 +399,9 @@ const AtsLayout = ({ data }: { data: ResumeData }) => {
                   {[exp.position, exp.company].filter(Boolean).join(' — ')}
                   {exp.period && <span className="font-normal"> ({exp.period})</span>}
                 </p>
+                {exp.projectDescription && <p className="text-slate-700">{exp.projectDescription}</p>}
                 {exp.duties && exp.duties.split('\n').filter(Boolean).map((d, k) => <p key={k}>– {d}</p>)}
+                {exp.technologies && <p>Технологии: {exp.technologies}</p>}
                 {exp.achievements && <p>Результат: {exp.achievements}</p>}
               </div>
             ))}
