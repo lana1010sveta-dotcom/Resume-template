@@ -199,7 +199,7 @@ const ResumeForm: React.FC<Props> = ({ data, onChange }) => {
             label="Личные качества (Soft Skills)" 
             value={data.skills.soft.join(', ')} 
             onChange={(v) => onChange({ ...data, skills: { ...data.skills, soft: v.split(',').map(s => s.trim()).filter(Boolean) } })}
-            placeholder="Leadership, Problem Solving, Communication..."
+            placeholder="Лидерство, коммуникабельность, решение проблем, командная работа..."
           />
         </div>
       </FormSection>
